@@ -14,6 +14,7 @@ class SessionClient:
 	def __init__(self,socket_path):
 		self.sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
 		self.sock.connect(socket_path) # may throw various exceptions
+		self.sock.setblocking(False) # nonblocking
 		self.sock_reader = bettersocket.BetterSocketReader(self.sock)
 
 	def run(self):
@@ -46,14 +47,17 @@ class SessionClient:
 
 				elif s is self.sock: # data arrived from the server
 
-					try:
-						line = self.sock_reader.readline()
+					while True: # there might be more than one line in one message, we need to read them all
+						try:
+							line = self.sock_reader.readline() # only reads one line
 
-					except (BrokenPipeError,ConnectionResetError):
-						return # socket closed
+						except (BrokenPipeError,ConnectionResetError):
+							return # socket closed
 
-					if line: # none means there is more data to read
-						print(line.decode('utf-8'))
+						if line: # none means there is more data to read
+							print(line.decode('utf-8'))
+						else:
+							break # break the reading loop, as there is nothing left to read
 
 
 	def close(self):

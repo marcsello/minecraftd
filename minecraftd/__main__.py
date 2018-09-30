@@ -17,11 +17,21 @@ def runDaemon():
 	lp.start()
 
 	# and now the ugly part:
-	for l in pr.getStdout():
-		lp.passLine(l.decode('utf-8'))
+	while True:
+		try:
+			for l in pr.getStdout():
+				lp.passLine(l.decode('utf-8'))
 
-	logging.info("Minecraftd is shutting down")
-	lp.shutdown()
+			break # stdout reading ended without exceptions
+
+		except KeyboardInterrupt: # SIGINT sends a "stop" command to the server, and it will shutdown greacefully (using Popen.wait to wait for termination would end up in deadlock, because we use stdin/stdout instead of communicate)
+			lp.passLine("Minecraftd: Daemon is shuttig down. Stopping minecraft server.")
+			pr.stop() # sends the stop command to the minecraft server
+
+
+	logging.info("Minecraftd is shutting down...")
+	lp.shutdown() # stops the thread and disconnects the user
+	lp.join() # wait for line processor to close, before closing the control socket
 	cs.close()
 
 	return pr.getReturnCode()
@@ -32,7 +42,7 @@ def main():
 	if '--daemon' in sys.argv: # start daemon
 
 		rc = runDaemon()
-		sys.exit(rc)
+		sys.exit(rc) # the return code of minecraftd daemon is the return code of the minecraft server
 
 	else: # attach screen
 

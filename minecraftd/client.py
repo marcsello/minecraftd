@@ -18,7 +18,7 @@ class Client():
 
 	def readLine(self): # returns: unicode str
 		if not self._active:
-			raise ConnectResetError() # connection was closed, or not even opened
+			raise ConnectResetError() # client was kicked, and the connection closed
 
 		return self._reader.readline().decode('utf-8')
 

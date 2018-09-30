@@ -2,6 +2,7 @@
 import clientswapper
 import threading
 import weakref
+import logging
 
 # the purpose of this class is to control the lines going
 # back and forth between the client and the process
@@ -23,17 +24,19 @@ class LineProcessor(threading.Thread):
 
 		while self._active:
 
-			line = self._clientSwapper.readLine(5) # 5 sec as timeout
+			line = self._clientSwapper.readLine(5) # 5 sec as timeout, returns None on timeout
 
 			if line:
 				p = self._process_ref()
-				if not p:
+				if not p: # process not just closed, but even cleaned up by the garbage collector
 					break
 
 				p.sendCmd(line)
 
 
+		logging.debug("Line processor thread closed")
 		self._active = False
+		self._clientSwapper.close()
 
 
 	def passLine(self,line): # called by the process's line reader, because of a bug there is no better way to do this :(
@@ -41,5 +44,4 @@ class LineProcessor(threading.Thread):
 
 
 	def shutdown(self):
-		self._clientSwapper.close()
 		self._active = False

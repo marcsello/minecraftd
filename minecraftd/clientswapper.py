@@ -49,15 +49,18 @@ class ClientSwapper:
 			if self._client:
 				selectable += [self._client.sock]
 
-
 			try:
 				readable, writeable, errored = select.select(selectable, [], [], timeout) # waits for an event to happen
 
-			except ValueError: # socked closed during the waiting
+			except ValueError as e: # socked closed during the waiting
+				logging.error("Value error in select: {} (Socket closed?)".format(str(e)))
 				break
 
 
-			for s in readable:
+			if not readable: # timeout expired
+				return None
+
+			for s in readable: # timeout not expired
 
 				if s is self._controlSocket.sock: # new connection request arrived
 
@@ -80,7 +83,7 @@ class ClientSwapper:
 
 						try:
 
-							line = self._client.readLine()
+							line = self._client.readLine() # A value is only returned if a whole line is read, otherwise None is returned
 
 							if line: # only if someting is actually read
 								return line
@@ -89,10 +92,6 @@ class ClientSwapper:
 							self._client = None
 							logging.info("Client disconnected")
 
-
-				else: # Timeout expired
-
-					return None
 
 	# kick the user if connected
 	# should be called before the shutdown of the program

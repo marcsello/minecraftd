@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import subprocess
 
+# an instance of a minecraft server process
 class Process:
 
 	def __init__(self,command,_cwd):
@@ -28,3 +29,9 @@ class Process:
 	def getReturnCode(self):
 
 		return self.process.returncode
+
+
+	def stop(self):
+
+		self.sendCmd('save-all')
+		self.sendCmd('stop')

@@ -25,7 +25,7 @@ def runDaemon():
 			break # stdout reading ended without exceptions
 
 		except KeyboardInterrupt: # SIGINT sends a "stop" command to the server, and it will shutdown greacefully (using Popen.wait to wait for termination would end up in deadlock, because we use stdin/stdout instead of communicate)
-			lp.passLine("Minecraftd: Daemon is shuttig down. Stopping minecraft server.")
+			lp.passLine("Minecraftd: Daemon is shuttig down. Stopping minecraft server.\n")
 			pr.stop() # sends the stop command to the minecraft server
 
 

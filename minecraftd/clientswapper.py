@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 import threading
 import select
-import client
 import logging
+
+from . import client
 
 # The purpose of this class is to present an abstract client
 # Which we assume always connected

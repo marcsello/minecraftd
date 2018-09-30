@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import bettersocket
+from . import bettersocket
 
 class Client():
 

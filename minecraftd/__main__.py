@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 import sys
 import logging
-from lineprocessor import LineProcessor
-from process import Process
-from controlsocket import ControlSocket
-from sessionclient import SessionClient
+from .lineprocessor import LineProcessor
+from .process import Process
+from .controlsocket import ControlSocket
+from .sessionclient import SessionClient
 
 def runDaemon():
 	logging.basicConfig(filename="", level=logging.INFO, format="%(asctime)s - %(levelname)s: %(message)s")

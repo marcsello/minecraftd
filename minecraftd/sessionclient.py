@@ -2,8 +2,8 @@
 import sys
 import socket
 import select
-import bettersocket
 
+from . import bettersocket
 
 # This is a very simple telnet (or netcat) like class
 # Well, it could be a function instead of a class

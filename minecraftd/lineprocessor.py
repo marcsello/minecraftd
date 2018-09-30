@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-import clientswapper
 import threading
 import weakref
 import logging
+
+from . import clientswapper
 
 # the purpose of this class is to control the lines going
 # back and forth between the client and the process

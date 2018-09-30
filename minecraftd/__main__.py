@@ -4,7 +4,7 @@ import logging
 from lineprocessor import LineProcessor
 from process import Process
 from controlsocket import ControlSocket
-
+from sessionclient import SessionClient
 
 def runDaemon():
 	logging.basicConfig(filename="", level=logging.INFO, format="%(asctime)s - %(levelname)s: %(message)s")
@@ -37,6 +37,28 @@ def runDaemon():
 	return pr.getReturnCode()
 
 
+def attachSession():
+
+	try:
+		sc = SessionClient('/tmp/mc.sock')
+
+	except (ConnectionRefusedError,FileNotFoundError):
+		print("Couldn't connect to Minecraftd console (is the daemon running?)")
+		return
+
+	except PermissionError:
+		print("You have no permission to attach to Minecraftd console")
+		return
+
+	try:
+		sc.run()
+
+	except KeyboardInterrupt:
+		sc.close()
+
+	print("Session closed")
+
+
 def main():
 
 	if '--daemon' in sys.argv: # start daemon
@@ -46,9 +68,7 @@ def main():
 
 	else: # attach screen
 
-		# TODO
-		pass
-
+		attachSession()
 
 
 if __name__ == '__main__':

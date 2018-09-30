@@ -4,7 +4,7 @@ Minecraft server daemonizer for systemd compatiblity
 ## What dis?
 This is a replacement for 'screen' when you run a Minecraft (or Spigot) using systemd (or any other init system).
 
-Minecraftd 
+Minecraftd daemonizes the minecraft server by capturing and buffering it's output, and giving commands to it, when needed. It also allows the administrator to access the server any time with a simple console.
 
 ## Why dis?
 I find it an ugly hack, to use screen with systemd, and I had weird issues with it.

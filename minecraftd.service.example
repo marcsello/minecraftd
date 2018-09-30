@@ -1,0 +1,16 @@
+[Unit]
+Description=Minecraft server daemon
+After=network-online.target
+
+[Service]
+Type=simple
+User=minecraft
+Group=minecraft
+KillMode=process
+KillSignal=SIGINT
+Restart=never
+
+ExecStart=/usr/local/bin/minecraftd --daemon
+
+[Install]
+WantedBy=multi-user.target

@@ -5,15 +5,18 @@ from .lineprocessor import LineProcessor
 from .process import Process
 from .controlsocket import ControlSocket
 from .sessionclient import SessionClient
+from .config import Config
 
-def runDaemon():
-	logging.basicConfig(filename="", level=logging.INFO, format="%(asctime)s - %(levelname)s: %(message)s")
+CONFIG_FILE="/etc/minecraftd.json"
+
+def runDaemon(cfg):
+	logging.basicConfig(filename="", level=cfg.logLevel(), format="%(asctime)s - %(levelname)s: %(message)s")
 	logging.info("Minecraftd is starting...")
 
-	cs = ControlSocket("/tmp/mc.sock")
-	pr = Process(['java','-jar','server.jar'],'/home/marcsello/superscreen/minecraft')
+	cs = ControlSocket(cfg.socketPath())
+	pr = Process(cfg.compileCommand(),cfg.cwd())
 
-	lp = LineProcessor(pr,cs)
+	lp = LineProcessor(pr,cs,cfg.historyLen())
 	lp.start()
 
 	# and now the ugly part:
@@ -37,10 +40,10 @@ def runDaemon():
 	return pr.getReturnCode()
 
 
-def attachSession():
+def attachSession(cfg):
 
 	try:
-		sc = SessionClient('/tmp/mc.sock')
+		sc = SessionClient(cfg.socketPath())
 
 	except (ConnectionRefusedError,FileNotFoundError):
 		print("Couldn't connect to Minecraftd console (is the daemon running?)")
@@ -61,14 +64,21 @@ def attachSession():
 
 def main():
 
+	try:
+		cfg = Config(CONFIG_FILE)
+
+	except Exception as e:
+		logging.critical("Failed to load config file: {}".format(str(e)))
+		sys.exit(255)
+
 	if '--daemon' in sys.argv: # start daemon
 
-		rc = runDaemon()
+		rc = runDaemon(cfg)
 		sys.exit(rc) # the return code of minecraftd daemon is the return code of the minecraft server
 
 	else: # attach screen
 
-		attachSession()
+		attachSession(cfg)
 
 
 if __name__ == '__main__':

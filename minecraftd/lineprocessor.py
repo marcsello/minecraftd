@@ -11,7 +11,7 @@ from . import clientswapper
 
 class LineProcessor(threading.Thread):
 
-	def __init__(self,process,controlsocket):
+	def __init__(self,process,controlsocket,history_len):
 		threading.Thread.__init__(self)
 
 		self._process_ref = weakref.ref(process) # only a weak reference is stored to the process... if it's destroyed, well... we exit
@@ -19,6 +19,8 @@ class LineProcessor(threading.Thread):
 		self._active = False
 
 		self._clientSwapper = clientswapper.ClientSwapper(controlsocket) # the client swapper is contained here
+
+		# TODO: History
 
 	def run(self):
 		self._active = True

@@ -26,3 +26,10 @@ class Client():
 	def sendLine(self,line): # accepts: unicode str
 		if self._active:
 			self.sock.sendall(line.encode('utf-8'))
+
+
+	def sendLineList(self,line_list):
+
+		if line_list: # don't send empty list
+			for line in line_list:
+				self.sendLine(line)

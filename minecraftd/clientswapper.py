@@ -4,6 +4,7 @@ import select
 import logging
 
 from . import client
+from . import history
 
 # The purpose of this class is to present an abstract client
 # Which we assume always connected
@@ -12,11 +13,12 @@ from . import client
 # This class handles the connecting and disconnecting of clients
 # And allows only one connected client at a time
 
+# This also handles sending the history when a new client is connected
 
 class ClientSwapper:
 
 
-	def __init__(self,controlsocket):
+	def __init__(self,controlsocket,history_len):
 
 		self._controlSocket = controlsocket
 
@@ -24,7 +26,9 @@ class ClientSwapper:
 
 		self._clientLock = threading.Lock()
 
+		self._history = history.History(history_len) # we store byte arrays, disabling this handled inside this class
 
+	# except bytes
 	def sendLine(self,line):
 		with self._clientLock:
 			if self._client:
@@ -36,10 +40,13 @@ class ClientSwapper:
 					logging.info("Client disconnected")
 
 
+		self._history.addLine(line) # history class is thread safe
+
 
 	# This method handles the accepting of clients
 	# And reading new messages from the client
 	# It only returns if there is a new message recieved, or the timeout expired
+	# returns bytes
 	def readLine(self,timeout=None):
 
 		while True: # Don't worry, it will return
@@ -76,6 +83,7 @@ class ClientSwapper:
 							logging.info("Previous session terminated")
 
 						self._client = client.Client(cl)
+						self._client.sendLineList(self._history.fetchLines()) # send the log if necessary
 
 
 				elif self._client and s is self._client.sock: # new message arrived
@@ -87,6 +95,7 @@ class ClientSwapper:
 							line = self._client.readLine() # A value is only returned if a whole line is read, otherwise None is returned
 
 							if line: # only if someting is actually read
+								self._history.addLine(line + '\n') # add line to history before returning with it
 								return line
 
 						except (ConnectionResetError,BrokenPipeError): # connection to the client is lost

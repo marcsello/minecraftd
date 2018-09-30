@@ -18,9 +18,7 @@ class LineProcessor(threading.Thread):
 
 		self._active = False
 
-		self._clientSwapper = clientswapper.ClientSwapper(controlsocket) # the client swapper is contained here
-
-		# TODO: History
+		self._clientSwapper = clientswapper.ClientSwapper(controlsocket,history_len) # the client swapper is contained here
 
 	def run(self):
 		self._active = True

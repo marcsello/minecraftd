@@ -20,6 +20,16 @@ Since google led me nowhere with this problem, I decided to write my own script 
 
 ### How to install & setup:
 
+#### Prerequirements:
+Git, python3, and pip3 are required by this software, so we install those first:
+
+##### Debian:
+```bash
+sudo apt install git python3 python3-pip
+```
+
+You'll also need java to run the minecraft server, but I assume you solved this already :)
+
 #### Basic setup:
 
 First, clone the repo, and install minecraftd:

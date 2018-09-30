@@ -60,3 +60,12 @@ class Config():
 
 		except KeyError:
 			return "/tmp/mc.sock"
+
+
+	def shutdownCommands(self):
+
+		try:
+			return self._cfg['server']['shutdown_commands']
+
+		except KeyError:
+			return ['stop']

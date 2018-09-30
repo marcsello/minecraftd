@@ -1,12 +1,17 @@
 #!/usr/bin/env python3
 import subprocess
+import os
 
 # an instance of a minecraft server process
 class Process:
 
+	@staticmethod
+	def _preexec(): # do not forward signals (Like. SIGINT) we want to process those differently
+		os.setpgrp()
+
 	def __init__(self,command,_cwd):
 
-		self.process = subprocess.Popen(command,cwd = _cwd,stdout=subprocess.PIPE, stdin=subprocess.PIPE)
+		self.process = subprocess.Popen(command,cwd = _cwd,stdout=subprocess.PIPE, stdin=subprocess.PIPE, preexec_fn=Process._preexec)
 
 
 	def sendLine(self,line): # takes: unicode str
@@ -31,7 +36,7 @@ class Process:
 		return self.process.returncode
 
 
-	def stop(self):
+	def sendCommandList(self,command_list):
 
-		self.sendCmd('save-all')
-		self.sendCmd('stop')
+		for cmd in command_list:
+			self.sendCmd(cmd)

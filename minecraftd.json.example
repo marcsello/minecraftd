@@ -15,6 +15,12 @@
 			"-server",
 			"-Xms4G",
 			"-Xmx6G"
+		],
+
+
+		"shutdown_commands" : [
+			"save-all",
+			"stop"
 		]
 
 	},

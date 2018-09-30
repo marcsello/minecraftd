@@ -82,6 +82,7 @@ class ClientSwapper:
 							self._client.kick()
 							logging.info("Previous session terminated")
 
+						cl.setblocking(False) # this is needed because of the loop bellow, so it can be breaked when nothing else is left to read
 						self._client = client.Client(cl)
 						self._client.sendLineList(self._history.fetchLines()) # send the log if necessary
 
@@ -90,17 +91,23 @@ class ClientSwapper:
 
 					with self._clientLock:
 
-						try:
+						while True: # there might be more than one line in one message, we need to read them all
 
-							line = self._client.readLine() # A value is only returned if a whole line is read, otherwise None is returned
+							try:
 
-							if line: # only if someting is actually read
-								self._history.addLine(line + '\n') # add line to history before returning with it
-								return line
+								line = self._client.readLine() # A value is only returned if a whole line is read, otherwise None is returned
 
-						except (ConnectionResetError,BrokenPipeError): # connection to the client is lost
-							self._client = None
-							logging.info("Client disconnected")
+								if line: # only if someting is actually read
+									self._history.addLine(line + '\n') # add line to history before returning with it
+									return line
+
+								else: # nothing left to read
+									break
+
+							except (ConnectionResetError,BrokenPipeError): # connection to the client is lost
+								self._client = None
+								logging.info("Client disconnected")
+								break # because client is set to none, the next loop would get exception
 
 
 	# kick the user if connected

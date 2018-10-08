@@ -11,26 +11,26 @@ I find it an ugly hack, to use screen with systemd, and I had weird issues with 
 Since google led me nowhere with this problem, I decided to write my own script for it.
 
 ## Features
-  - Service like start/stop/restart of a minecraft server. No more screens and tmuxes
-  - Easy to configure and run
-  - Attachable/detachable console with unix permissions
-  - Compatible with any flavour of minecraft server, or init system (example for systemd provided)
+- Service like start/stop/restart of a minecraft server. No more screens and tmuxes
+- Easy to configure and run
+- Attachable/detachable console with unix permissions
+- Compatible with any flavour of minecraft server, or init system (example for systemd provided)
 
 ## Usage
 
-### How to install & setup:
+### How to install & setup
 
-#### Prerequirements:
+#### Prerequirements
 Git, python3, and pip3 are required by this software, so we install those first:
 
-##### Debian:
+##### Debian
 ```bash
 sudo apt install git python3 python3-pip
 ```
 
 You'll also need java to run the minecraft server, but I assume you solved this already :)
 
-#### Basic setup:
+#### Basic setup
 
 First, clone the repo, and install minecraftd:
 ```bash
@@ -41,7 +41,7 @@ sudo ./install.sh
 
 Next you should copy the example configuration file to it's place:  
 (in the folder you cloned the repo)
-```
+```bash
 sudo cp minecraftd.json.example /etc/minecraftd.json
 ```
 
@@ -49,7 +49,7 @@ After that you should edit the config file:
 ```bash
 sudo nano /etc/minecraftd.json
 ```
-```
+```json5
 {
 
         "server": { // configurations related to your server
@@ -119,12 +119,11 @@ sudo usermod -a -G minecraft $USER
 ```
 After that log out, and log back in.
 
-
 **And you are done! Enjoy your minecraft server!**
 
-### How to use:
+### How to use
 When the minecraftd is running (and you have permission to access the console), you can access the console with the following command:
-```
+```bash
 minecraftd
 ```
 

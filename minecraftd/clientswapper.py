@@ -74,7 +74,7 @@ class ClientSwapper:
 
 					with self._clientLock:
 
-						cl,addr = self._controlSocket.acceptClient()
+						cl = self._controlSocket.acceptClient()[0] # this returns a tuple of client and address, we only need the client descriptor
 
 						logging.info("New client connected!")
 

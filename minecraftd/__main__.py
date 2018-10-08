@@ -22,7 +22,7 @@ def runDaemon(cfg):
 	# and now the ugly part:
 	while True:
 		try:
-			for l in pr.getStdout():
+			for l in pr.getStdout(): # Okay this miiiiiight not be the best way to do this... We could merge it into the socket's select, and make the whole program single threaded... I just couldn't think of a nicer way to separate this
 				lp.passLine(l.decode('utf-8'))
 
 			break # stdout reading ended without exceptions

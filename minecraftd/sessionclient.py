@@ -22,7 +22,7 @@ class SessionClient:
 		while True:
 
 			try:
-				readable, writeable, errored = select.select([sys.stdin, self.sock], [], []) # wait for either one
+				readable = select.select([sys.stdin, self.sock], [], [])[0] # wait for either one
 
 			except ValueError: # some exception in the selector
 				return

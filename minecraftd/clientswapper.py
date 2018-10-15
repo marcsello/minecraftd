@@ -58,7 +58,7 @@ class ClientSwapper:
 				selectable += [self._client.sock]
 
 			try:
-				readable, writeable, errored = select.select(selectable, [], [], timeout) # waits for an event to happen
+				readable = select.select(selectable, [], [], timeout)[0] # waits for an event to happen
 
 			except ValueError as e: # socked closed during the waiting
 				logging.error("Value error in select: {} (Socket closed?)".format(str(e)))

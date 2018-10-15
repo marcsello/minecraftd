@@ -79,7 +79,7 @@ sudo nano /etc/minecraftd.json
 
         "minecraftd": { // configurations related to minecraftd behaviour
 
-                "console_socket_path" : "/tmp/mc.sock", // where to place the socket file that is used by the attachable console
+                "console_socket_path" : "/var/lib/minecraftd/control.sock", // where to place the socket file that is used by the attachable console
                 "history_length" : 10, // last n lines to transmit when a new client is connected (use false or null to disable)
                 "log_level" : "INFO" // ... the log level
         }
@@ -89,6 +89,9 @@ sudo nano /etc/minecraftd.json
 **You are done with the basic configuration of minecraftd**  
 But you need to add it to your init system
 
+**If you are fine with the basic setup, you should change the** `"console_socket_path"` **entry in the above config to** `/tmp/mc.sock` **otherwise the daemon will fail to start, since we not created the default directory yet!**
+
+
 #### Installing systemd service
 
 Now we need an user, that runs the minecraft server, and a system group which members are allowed to attach to the the console.
@@ -96,6 +99,15 @@ Now we need an user, that runs the minecraft server, and a system group which me
 ```bash
 sudo groupadd -r minecraft
 sudo useradd -d "YOUR MINECRAFT SERVER DIRECTORY" -M -r -s /bin/false -g minecraft minecraft
+```
+
+After that we should create the directory for the daemon's socket. (see the config above)
+We will give write permissions to the daemon user, and read permissions to it's group (so that anyone in the group can access to the socket):
+
+```bash
+sudo mkdir /var/lib/minecraftd
+sudo chown minecraft:minecraft /var/lib/minecraftd
+sudo 750 /var/lib/minecraftd
 ```
 
 Copy the systemd unit file to it's place:  

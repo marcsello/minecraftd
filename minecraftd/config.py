@@ -59,7 +59,7 @@ class Config():
 			return self._cfg['minecraftd']['history_length']
 
 		except KeyError:
-			return "/tmp/mc.sock"
+			return 24
 
 
 	def shutdownCommands(self):

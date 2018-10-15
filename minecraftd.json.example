@@ -27,7 +27,7 @@
 
 	"minecraftd": {
 
-		"console_socket_path" : "/tmp/mc.sock",
+		"console_socket_path" : "/var/lib/minecraftd/control.sock",
 		"history_length" : 10,
 		"log_level" : "INFO"
 	}

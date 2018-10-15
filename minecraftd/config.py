@@ -50,7 +50,7 @@ class Config():
 			return self._cfg['minecraftd']['console_socket_path']
 
 		except KeyError:
-			return "/tmp/mc.sock"
+			return "/var/lib/minecraftd/control.sock"
 
 
 	def historyLen(self):

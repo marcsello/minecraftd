@@ -35,9 +35,9 @@ class ClientSwapper:
 
 			try:
 
-				if type(data) is list: # data is a list of strings
+				if isinstance(data,list): # data is a list of strings
 					self._client.sendLineList(data)
-				elif type(data) is str: # data is a string itself
+				elif isinstance(data,str): # data is a string itself
 					self._client.sendLine(data)
 				else:
 					raise ValueError("Data must be a string, or a list of strings")

@@ -41,7 +41,7 @@ class LineProcessor(threading.Thread):
 
 
 	def passLine(self,line): # called by the process's line reader, because of a bug there is no better way to do this :(
-		self._clientSwapper.sendLine(line)
+		self._clientSwapper.sendLine(line) # expects utf-8 string
 
 
 	def shutdown(self):

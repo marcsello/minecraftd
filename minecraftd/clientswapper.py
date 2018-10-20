@@ -26,19 +26,32 @@ class ClientSwapper:
 
 		self._clientLock = threading.Lock()
 
-		self._history = history.History(history_len) # we store byte arrays, disabling this handled inside this class
+		self._history = history.History(history_len) # we store utf-8 strings, disabling this handled inside this class
 
-	# except bytes
+
+	def _sendDataToClient(self,data): # this method requires external locking; data can be a single str, or a list of strings that would be transmitted to the client
+
+		if self._client:
+
+			try:
+
+				if type(data) is list: # data is a list of strings
+					self._client.sendLineList(data)
+				elif type(data) is str: # data is a string itself
+					self._client.sendLine(data)
+				else:
+					raise ValueError("Data must be a string, or a list of strings")
+
+			except BrokenPipeError: # means the client is disconnected
+				self._client = None
+				logging.info("Client disconnected")
+
+
+
+	# except utf-8 string
 	def sendLine(self,line):
 		with self._clientLock:
-			if self._client:
-				try:
-					self._client.sendLine(line)
-
-				except BrokenPipeError: # means the client is disconnected
-					self._client = None
-					logging.info("Client disconnected")
-
+			self._sendDataToClient(line)
 
 		self._history.addLine(line) # history class is thread safe
 
@@ -58,7 +71,7 @@ class ClientSwapper:
 				selectable += [self._client.sock]
 
 			try:
-				readable = select.select(selectable, [], [], timeout)[0] # waits for an event to happen
+				readable = select.select(selectable, [], [], timeout)[0] # waits for an event to happen, Note: even if the client is set to None by the line sender, this will hold a reference to the socket, however it should not be a problem, because a newly connecting client (or timeout) will trigger the event loop to continue, and at the next loop it will no longer wait on the dead socket
 
 			except ValueError as e: # socked closed during the waiting
 				logging.error("Value error in select: {} (Socket closed?)".format(str(e)))
@@ -84,8 +97,7 @@ class ClientSwapper:
 
 						cl.setblocking(False) # this is needed because of the loop bellow, so it can be breaked when nothing else is left to read
 						self._client = client.Client(cl)
-						self._client.sendLineList(self._history.fetchLines()) # send the log if necessary
-
+						self._sendDataToClient(self._history.fetchLines()) # send the log if necessary
 
 				elif self._client and s is self._client.sock: # new message arrived
 

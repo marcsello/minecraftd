@@ -20,7 +20,12 @@ class Client():
 		if not self._active:
 			raise ConnectResetError() # client was kicked, and the connection closed
 
-		return self._reader.readline().decode('utf-8')
+		line = self._reader.readline() # none is returned, if there wasn't a whole line to reard
+
+		if line: # if not None then decode
+			return line.decode('utf-8')
+		else:
+			return None
 
 
 	def sendLine(self,line): # accepts: unicode str

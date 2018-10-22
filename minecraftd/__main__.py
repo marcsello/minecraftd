@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import sys
 import logging
+import signal
 from .lineprocessor import LineProcessor
 from .process import Process
 from .controlsocket import ControlSocket
@@ -43,10 +44,13 @@ def runDaemon(cfg):
 			break # stdout reading ended without exceptions
 
 		except KeyboardInterrupt: # SIGINT sends a "stop" command to the server, and it will shutdown greacefully (using Popen.wait to wait for termination would end up in deadlock, because we use stdin/stdout instead of communicate)
+			signal.signal(signal.SIGINT, signal.SIG_IGN) # ignore any further sigint, because the shutdown process is already started
 			logging.info("Stopping minecraft server...")
 			lp.passLine("Minecraftd: Daemon is shuttig down! Stopping minecraft server...\n")
 			pr.sendCommandList(cfg.shutdownCommands()) # should contain "stop"
 
+
+	signal.signal(signal.SIGINT, signal.SIG_IGN) # we are shutting down, so signals are ignored
 
 	logging.info("Minecraftd is shutting down...")
 	lp.shutdown() # stops the thread and disconnects the user

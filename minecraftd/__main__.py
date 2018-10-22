@@ -13,8 +13,23 @@ def runDaemon(cfg):
 	logging.basicConfig(filename="", level=cfg.logLevel(), format="%(asctime)s - %(levelname)s: %(message)s")
 	logging.info("Minecraftd is starting...")
 
-	cs = ControlSocket(cfg.socketPath())
-	pr = Process(cfg.compileCommand(),cfg.cwd())
+	try:
+		cs = ControlSocket(cfg.socketPath())
+
+	except FileNotFoundError:
+		logging.critical("Failed to create socket: Path not found")
+		sys.exit(1)
+
+	except PermissionError:
+		logging.critical("Failed to create socket: Permission denied")
+		sys.exit(1)
+
+	try:
+		pr = Process(cfg.compileCommand(),cfg.cwd()) # starts the process
+
+	except FileNotFoundError as e:
+		logging.critical("Failed to start process: {}".format(str(e)))
+		sys.exit(1)
 
 	lp = LineProcessor(pr,cs,cfg.historyLen())
 	lp.start()
@@ -69,8 +84,8 @@ def main():
 		cfg = Config(CONFIG_FILE)
 
 	except Exception as e:
-		logging.critical("Failed to load config file: {}".format(str(e)))
-		sys.exit(255)
+		print("CRITICAL: Failed to load config file: {}".format(str(e)))
+		sys.exit(1)
 
 	if '--daemon' in sys.argv: # start daemon
 

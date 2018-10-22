@@ -33,7 +33,7 @@ class Process:
 
 	def getReturnCode(self):
 
-		return self.process.returncode
+		return self.process.poll() # returns None if the process is still running
 
 
 	def sendCommandList(self,command_list):

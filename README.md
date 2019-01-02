@@ -109,7 +109,7 @@ We will give write permissions to the daemon user, and read permissions to it's 
 ```bash
 sudo mkdir /var/lib/minecraftd
 sudo chown minecraft:minecraft /var/lib/minecraftd
-sudo 750 /var/lib/minecraftd
+sudo chmod 750 /var/lib/minecraftd
 ```
 
 Copy the systemd unit file to it's place:  

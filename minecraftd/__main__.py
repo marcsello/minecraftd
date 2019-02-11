@@ -2,13 +2,14 @@
 import sys
 import logging
 import signal
+import os
 from .lineprocessor import LineProcessor
 from .process import Process
 from .controlsocket import ControlSocket
 from .sessionclient import SessionClient
 from .config import Config
 
-CONFIG_FILE="/etc/minecraftd.json"
+CONFIG_FILE="/etc/minecraftd.json" # default
 
 def runDaemon(cfg):
 	logging.basicConfig(filename="", level=cfg.logLevel(), format="%(asctime)s - %(levelname)s: %(message)s")
@@ -84,8 +85,14 @@ def attachSession(cfg):
 
 def main():
 
+
 	try:
-		cfg = Config(CONFIG_FILE)
+		config_file_to_load = os.environ['MINECRAFTD_CONFIG']
+	except KeyError: # environment variable is not set
+		config_file_to_load = CONFIG_FILE
+
+	try:
+		cfg = Config(config_file_to_load)
 
 	except Exception as e:
 		print("CRITICAL: Failed to load config file: {}".format(str(e)))
@@ -102,4 +109,4 @@ def main():
 
 
 if __name__ == '__main__':
-	 main()
+	main()

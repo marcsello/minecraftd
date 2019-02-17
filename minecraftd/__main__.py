@@ -12,7 +12,7 @@ from .config import Config
 CONFIG_FILE="/etc/minecraftd.json" # default
 
 def runDaemon(cfg):
-	logging.basicConfig(filename="", level=cfg.logLevel(), format="%(asctime)s - %(levelname)s: %(message)s")
+	logging.basicConfig(filename=cfg.logFilePath(), level=cfg.logLevel(), format="%(asctime)s - %(levelname)s: %(message)s")
 	logging.info("Minecraftd is starting...")
 
 	try:

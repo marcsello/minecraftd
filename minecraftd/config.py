@@ -26,6 +26,14 @@ class Config():
 
 		except KeyError:
 			return logging.INFO # default
+		
+	def logFilePath(self):
+		
+		try:			
+			return self._cfg['minecraftd']['logfile']
+		
+		except KeyError:
+			return "" # default = no logfile
 
 	def compileCommand(self): # no default
 

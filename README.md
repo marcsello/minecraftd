@@ -81,7 +81,7 @@ sudo nano /etc/minecraftd.json
         },
 
         "minecraftd": { // configurations related to minecraftd behaviour
-
+		"logfile" : false, // Redirect logging from stderr to a file (won't ever needed probably)
                 "console_socket_path" : "/var/lib/minecraftd/control.sock", // where to place the socket file that is used by the attachable console
                 "history_length" : 10, // last n lines to transmit when a new client is connected (use false or null to disable)
                 "log_level" : "INFO" // ... the log level

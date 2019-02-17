@@ -18,6 +18,7 @@ class BetterSocketReader():
 		self._buffer = bytes()
 		self._delimiter = delimiter
 
+
 	def _popOneFromBuffer(self):
 
 		if self._delimiter in self._buffer:

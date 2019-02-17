@@ -18,6 +18,7 @@ class History():
 			self._history = []
 			self._maxlines = maxlines
 
+
 	# Add one line to the history
 	def addLine(self,line):
 		with self._lock:
@@ -28,6 +29,7 @@ class History():
 
 			if len(self._history) > self._maxlines: # because we add history line by line
 				del self._history[:1] # deleting the first entry without any extra calculation is sufficent (we use del for quicker free up)
+
 
 	# fetch the last history entries
 	def fetchLines(self,maxlines=None):

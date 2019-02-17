@@ -17,6 +17,7 @@ class SessionClient:
 		self.sock.setblocking(False) # nonblocking
 		self.sock_reader = bettersocket.BetterSocketReader(self.sock)
 
+
 	def run(self):
 
 		while True:

@@ -20,6 +20,7 @@ class LineProcessor(threading.Thread):
 
 		self._clientSwapper = clientswapper.ClientSwapper(controlsocket,history_len) # the client swapper is contained here
 
+
 	def run(self):
 		self._active = True
 

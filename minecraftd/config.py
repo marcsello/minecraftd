@@ -27,13 +27,15 @@ class Config():
 		except KeyError:
 			return logging.INFO # default
 		
+		
 	def logFilePath(self):
-		
-		try:			
+
+		try:
 			return self._cfg['minecraftd']['logfile']
-		
+
 		except KeyError:
 			return "" # default = no logfile
+
 
 	def compileCommand(self): # no default
 
@@ -47,6 +49,7 @@ class Config():
 		cmd += ['-jar',self._cfg['server']['server_jar'],'nogui']
 
 		return cmd # done
+
 
 	def cwd(self): # no default
 		return self._cfg['server']['server_path']

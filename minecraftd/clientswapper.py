@@ -77,15 +77,14 @@ class ClientSwapper:
 				logging.error("Value error in select: {} (Socket closed?)".format(str(e)))
 				break
 
+			with self._clientLock:
 
-			if not readable: # timeout expired
-				return None
+				if not readable: # timeout expired
+					return None
 
-			for s in readable: # timeout not expired
+				for s in readable: # timeout not expired
 
-				if s is self._controlSocket.sock: # new connection request arrived
-
-					with self._clientLock:
+					if s is self._controlSocket.sock: # new connection request arrived
 
 						cl = self._controlSocket.acceptClient()[0] # this returns a tuple of client and address, we only need the client descriptor
 
@@ -99,9 +98,7 @@ class ClientSwapper:
 						self._client = client.Client(cl)
 						self._sendDataToClient(self._history.fetchLines()) # send the log if necessary
 
-				elif self._client and s is self._client.sock: # new message arrived
-
-					with self._clientLock:
+					elif self._client and s is self._client.sock: # new message arrived
 
 						while True: # there might be more than one line in one message, we need to read them all
 

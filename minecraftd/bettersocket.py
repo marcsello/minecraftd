@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 import socket
+import select
 
+#
+# This reader handles reading from a scoket "line-by-line"
+#
 
 class BetterSocketReader():
 
@@ -55,3 +59,26 @@ class BetterSocketReader():
 			return self._popOneFromBuffer() # and check if a valid message recieved
 		else:
 			raise ConnectionResetError() # chunk is only none when the connection is dropped
+
+
+
+#
+# This writer handles Sending to nonblocking sockets properly
+#
+
+class BetterSocketWriter():
+
+	def __init__(self,_sock):
+
+		if not isinstance(_sock,socket.socket):
+			raise TypeError("Socket must be an instance of socket.socket")
+
+		self._sock = _sock
+
+
+	def sendall(self,data):
+
+		writable = select.select([],[self._sock],[])[1]
+
+		if writable:
+			self._sock.sendall(data)

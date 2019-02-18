@@ -7,6 +7,7 @@ class Client():
 
 		self.sock = cl_sock
 		self._reader = bettersocket.BetterSocketReader(self.sock)
+		self._writer = bettersocket.BetterSocketWriter(self.sock)
 		self._active = True
 
 
@@ -30,7 +31,7 @@ class Client():
 
 	def sendLine(self,line): # accepts: unicode str
 		if self._active:
-			self.sock.sendall(line.encode('utf-8'))
+			self._writer.sendall(line.encode('utf-8'))
 
 
 	def sendLineList(self,line_list):

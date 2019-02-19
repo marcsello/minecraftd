@@ -20,18 +20,18 @@ def runDaemon(cfg):
 
 	except FileNotFoundError:
 		logging.critical("Failed to create socket: Path not found")
-		sys.exit(1)
+		return 1
 
 	except PermissionError:
 		logging.critical("Failed to create socket: Permission denied")
-		sys.exit(1)
+		return 1
 
 	try:
 		pr = Process(cfg.compileCommand(),cfg.cwd()) # starts the process
 
 	except FileNotFoundError as e:
 		logging.critical("Failed to start process: {}".format(str(e)))
-		sys.exit(1)
+		return 1
 
 	lp = LineProcessor(pr,cs,cfg.historyLen())
 	lp.start()
